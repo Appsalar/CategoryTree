@@ -6,11 +6,13 @@ from categories.models import Category, Similarity
 
 
 class Command(BaseCommand):
-    help = 'Finds longest rabbit hole and all rabbit islands'
+    help = "Finds longest rabbit hole and all rabbit islands"
 
     def handle(self, *args, **options):
-        categories = Category.objects.values_list('id', flat=True)
-        similarities = Similarity.objects.values_list('firstCategory_id', 'secondCategory_id')
+        categories = Category.objects.values_list("id", flat=True)
+        similarities = Similarity.objects.values_list(
+            "firstCategory_id", "secondCategory_id"
+        )
 
         adjacencyList = createAdjacencyList(categories, similarities)
         # print(adjacencyList)
@@ -18,9 +20,10 @@ class Command(BaseCommand):
         paths, distance = findLongestRabbitHole(adjacencyList)
         rabbitIslands = findRabbitIslands(adjacencyList)
 
-        print(f'The longest rabbit hole length is {distance} and the possible holes are {paths}')
-        print(f'Rabbit islands are: {rabbitIslands}')
-
+        print(
+            f"The longest rabbit hole length is {distance} and the possible holes are {paths}"
+        )
+        print(f"Rabbit islands are: {rabbitIslands}")
 
 
 # a rabbit hole is the shortest route from one Category to another
@@ -37,10 +40,14 @@ def findLongestRabbitHole(adjacencyList):
         distance = max(visited.values())
 
         if distance > maxDistance:
-            maxDistancePaths = set([tuple(sorted(path)) for path in paths if len(path) == distance])
+            maxDistancePaths = set(
+                [tuple(sorted(path)) for path in paths if len(path) == distance]
+            )
             maxDistance = distance
         elif distance == maxDistance:
-            maxDistancePaths |= set([tuple(sorted(path)) for path in paths if len(path) == distance])
+            maxDistancePaths |= set(
+                [tuple(sorted(path)) for path in paths if len(path) == distance]
+            )
 
     return maxDistancePaths, maxDistance
 
@@ -82,11 +89,11 @@ def findRabbitIslands(adjacencyList):
 def bfsTraversalFromNode(node, adjacencyList, visited, component):
     queue = deque([node])
     visited.add(node)
-    
+
     while queue:
         current = queue.popleft()
         component.append(current)
-        
+
         for neighbor in adjacencyList[current]:
             if neighbor not in visited:
                 visited.add(neighbor)
@@ -94,14 +101,12 @@ def bfsTraversalFromNode(node, adjacencyList, visited, component):
 
 
 def createAdjacencyList(nodes, edges):
-    # Initialize the adjacency list as a dictionary
     adjacencyList = {node: [] for node in nodes}
-    
-    # Add edges to the adjacency list
+
     for edge in edges:
         node1, node2 = edge
         # print(adjacencyList)
         adjacencyList[node1].append(node2)
-        adjacencyList[node2].append(node1)  # If the graph is undirected
-    
+        adjacencyList[node2].append(node1)
+
     return adjacencyList
