@@ -6,12 +6,12 @@ from categories.views import CategoryViewSet, SimilarityViewSet, getByDepth, get
 
 router = DefaultRouter()
 
-router.register(r"categories", CategoryViewSet, basename="category")
-router.register(r"categories/similarities", SimilarityViewSet, basename="similarity")
+router.register(r"categories", CategoryViewSet)
+router.register(r"categories/similarities", SimilarityViewSet)
 
 urlpatterns = router.urls
 
 urlpatterns += [
     path("categories/get_by_depth/<int:depth>", getByDepth),
-    path("categories/similar/<int:pk>", getSimilar),
+    path("categories/<int:pk>/similar", getSimilar),
 ]
