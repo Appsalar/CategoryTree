@@ -16,9 +16,7 @@ class SimilaritySerializer(ModelSerializer):
 
     def create(self, validated_data):
         minValue, maxValue = self._getMinMaxById(validated_data)
-        return Similarity.objects.create(
-            firstCategory=minValue, secondCategory=maxValue
-        )
+        return Similarity.objects.create(firstCategory=minValue, secondCategory=maxValue)
 
     def update(self, instance, validated_data):
         minValue, maxValue = self._getMinMaxById(validated_data)

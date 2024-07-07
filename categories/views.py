@@ -43,9 +43,7 @@ def getSimilar(request, pk):
     get_object_or_404(Category.objects.all(), pk=pk)
 
     qs = Similarity.objects.filter(Q(firstCategory_id=pk) | Q(secondCategory_id=pk))
-    similarCategories = [
-        x.firstCategory if x.firstCategory_id != pk else x.secondCategory for x in qs
-    ]
+    similarCategories = [x.firstCategory if x.firstCategory_id != pk else x.secondCategory for x in qs]
 
     serializer = CategorySerializer(similarCategories, many=True)
     return Response(serializer.data)

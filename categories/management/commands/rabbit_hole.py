@@ -10,9 +10,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         categories = Category.objects.values_list("id", flat=True)
-        similarities = Similarity.objects.values_list(
-            "firstCategory_id", "secondCategory_id"
-        )
+        similarities = Similarity.objects.values_list("firstCategory_id", "secondCategory_id")
 
         adjacencyList = createAdjacencyList(categories, similarities)
         # print(adjacencyList)
@@ -20,9 +18,7 @@ class Command(BaseCommand):
         paths, distance = findLongestRabbitHole(adjacencyList)
         rabbitIslands = findRabbitIslands(adjacencyList)
 
-        print(
-            f"The longest rabbit hole length is {distance} and the possible holes are {paths}"
-        )
+        print(f"The longest rabbit hole length is {distance} and the possible holes are {paths}")
         print(f"Rabbit islands are: {rabbitIslands}")
 
 
@@ -40,14 +36,10 @@ def findLongestRabbitHole(adjacencyList):
         distance = max(visited.values())
 
         if distance > maxDistance:
-            maxDistancePaths = set(
-                [tuple(sorted(path)) for path in paths if len(path) == distance]
-            )
+            maxDistancePaths = set([tuple(sorted(path)) for path in paths if len(path) == distance])
             maxDistance = distance
         elif distance == maxDistance:
-            maxDistancePaths |= set(
-                [tuple(sorted(path)) for path in paths if len(path) == distance]
-            )
+            maxDistancePaths |= set([tuple(sorted(path)) for path in paths if len(path) == distance])
 
     return maxDistancePaths, maxDistance
 
@@ -86,18 +78,18 @@ def findRabbitIslands(adjacencyList):
     return components
 
 
-def bfsTraversalFromNode(node, adjacencyList, visited, component):
-    queue = deque([node])
-    visited.add(node)
+def bfsTraversalFromNode(startNode, adjacencyList, visited, component):
+    queue = deque([startNode])
+    visited.add(startNode)
 
     while queue:
         current = queue.popleft()
         component.append(current)
 
-        for neighbor in adjacencyList[current]:
-            if neighbor not in visited:
-                visited.add(neighbor)
-                queue.append(neighbor)
+        for node in adjacencyList[current]:
+            if node not in visited:
+                visited.add(node)
+                queue.append(node)
 
 
 def createAdjacencyList(nodes, edges):
